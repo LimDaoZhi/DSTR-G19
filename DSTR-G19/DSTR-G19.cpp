@@ -5,7 +5,6 @@
 #include <set>
 #include <string>
 #include <algorithm>
-//testing changes
 
 std::set<std::string> loadWords(const std::string& filename) {
     std::set<std::string> words;
