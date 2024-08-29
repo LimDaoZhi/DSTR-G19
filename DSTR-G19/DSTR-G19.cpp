@@ -6,7 +6,7 @@
 #include <string>
 #include <algorithm>
 //changes example 
-//hi
+using namespace std;
 
 std::set<std::string> loadWords(const std::string& filename) {
     std::set<std::string> words;
