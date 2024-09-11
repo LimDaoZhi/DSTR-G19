@@ -1,86 +1,181 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <set>
-#include <string>
-#include <algorithm>
-//changes example 
-using namespace std;
-//notes
+#include "DSTR-G19.hpp" //main
 
-std::set<std::string> loadWords(const std::string& filename) {
-    std::set<std::string> words;
-    std::ifstream file(filename);
-    std::string word;
-    while (file >> word) {
-        words.insert(word);
-    }
-    return words;
-}
+// // Utility function to trim whitespace from a string
+// std::string trim(const std::string& str) {
+//     size_t first = str.find_first_not_of(' ');
+//     if (std::string::npos == first) return str;
+//     size_t last = str.find_last_not_of(' ');
+//     return str.substr(first, (last - first + 1));
+// }
 
-int countWordsInComment(const std::string& comment, const std::set<std::string>& wordSet) {
-    std::istringstream iss(comment);
-    std::string word;
-    int count = 0;
-    while (iss >> word) {
-        // Remove punctuation and convert to lowercase
-        word.erase(std::remove_if(word.begin(), word.end(), ::ispunct), word.end());
-        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
-        if (wordSet.find(word) != wordSet.end()) {
-            count++;
-        }
-    }
-    return count;
-}
+// // ==================== SentimentAnalysisArray Class Implementation ====================
 
-void analyzeFeedback(const std::string& csvFile, const std::set<std::string>& positiveWords, const std::set<std::string>& negativeWords, int ratingColumn) {
-    std::ifstream file(csvFile);
-    std::string line;
-    int positiveTally = 0, negativeTally = 0, neutralTally = 0;
+// SentimentAnalysisArray::SentimentAnalysisArray(const std::string& csvFileName, const std::string& posWordsFile, const std::string& negWordsFile) {
+//     loadWordsFromFile(posWordsFile, positiveWords);
+//     loadWordsFromFile(negWordsFile, negativeWords);
+//     loadReviewsFromCSV(csvFileName);
+// }
 
-    while (std::getline(file, line)) {
-        std::istringstream ss(line);
-        std::string cell;
-        int column = 0;
-        std::string comment;
+// void SentimentAnalysisArray::loadWordsFromFile(const std::string& fileName, std::vector<std::string>& wordList) {
+//     std::ifstream file(fileName);
+//     std::string word;
+//     while (file >> word) {
+//         wordList.push_back(word);
+//     }
+//     file.close();
+// }
 
-        // Extract the comment from the specified rating column
-        while (std::getline(ss, cell, ',')) {
-            if (column == ratingColumn) {
-                comment = cell;
-                break;
-            }
-            column++;
-        }
+// void SentimentAnalysisArray::loadReviewsFromCSV(const std::string& csvFileName) {
+//     std::ifstream file(csvFileName);
+//     std::string line, review;
+//     int rating;
+//     while (getline(file, line)) {
+//         std::istringstream ss(line);
+//         getline(ss, review, ',');
+//         ss >> rating;
+//         reviews.push_back(trim(review));
+//         ratings.push_back(rating);
+//     }
+//     file.close();
+// }
 
-        if (!comment.empty()) {
-            int posCount = countWordsInComment(comment, positiveWords);
-            int negCount = countWordsInComment(comment, negativeWords);
+// int SentimentAnalysisArray::calculateSentimentScore(const std::string& review) {
+//     int positiveCount = 0, negativeCount = 0;
+//     std::istringstream ss(review);
+//     std::string word;
+//     while (ss >> word) {
+//         word = trim(word);
+//         if (std::find(positiveWords.begin(), positiveWords.end(), word) != positiveWords.end()) {
+//             positiveCount++;
+//         } else if (std::find(negativeWords.begin(), negativeWords.end(), word) != negativeWords.end()) {
+//             negativeCount++;
+//         }
+//     }
+//     return positiveCount - negativeCount;
+// }
 
-            if (posCount > negCount) {
-                positiveTally++;
-            } else if (negCount > posCount) {
-                negativeTally++;
-            } else {
-                neutralTally++;
-            }
-        }
-    }
+// void SentimentAnalysisArray::calculateAllSentimentScores() {
+//     for (size_t i = 0; i < reviews.size(); ++i) {
+//         int sentimentScore = calculateSentimentScore(reviews[i]);
+//         std::cout << "Review: " << reviews[i] << "\nSentiment Score: " << sentimentScore << "\n" << std::endl;
+//     }
+// }
 
-    std::cout << "Positive Comments: " << positiveTally << std::endl;
-    std::cout << "Negative Comments: " << negativeTally << std::endl;
-    std::cout << "Neutral Comments: " << neutralTally << std::endl;
-}
+// void SentimentAnalysisArray::compareRatingsWithSentiment() {
+//     for (size_t i = 0; i < reviews.size(); ++i) {
+//         int sentimentScore = calculateSentimentScore(reviews[i]);
+//         // Implement comparison logic and output results as required
+//     }
+// }
 
-int main() {
-    std::set<std::string> positiveWords = loadWords("positive-words.txt");
-    std::set<std::string> negativeWords = loadWords("negative-words.txt");
+// void SentimentAnalysisArray::generateOverallSentimentReport() {
+//     // Implement overall sentiment analysis report logic here
+// }
 
-    std::string csvFile = "feedback.csv";
-    int ratingColumn = 1; // Adjust based on your CSV format (0-based index)
-    
-    analyzeFeedback(csvFile, positiveWords, negativeWords, ratingColumn);
+// // ==================== SentimentAnalysisLinkedList Class Implementation ====================
 
-    return 0;
-}
+// SentimentAnalysisLinkedList::SentimentAnalysisLinkedList(const std::string& csvFileName, const std::string& posWordsFile, const std::string& negWordsFile) : head(nullptr) {
+//     loadWordsFromFile(posWordsFile, positiveWords);
+//     loadWordsFromFile(negWordsFile, negativeWords);
+//     loadReviewsFromCSV(csvFileName);
+// }
+
+// SentimentAnalysisLinkedList::~SentimentAnalysisLinkedList() {
+//     while (head) {
+//         ReviewNode* temp = head;
+//         head = head->next;
+//         delete temp;
+//     }
+// }
+
+// void SentimentAnalysisLinkedList::loadWordsFromFile(const std::string& fileName, std::vector<std::string>& wordList) {
+//     std::ifstream file(fileName);
+//     std::string word;
+//     while (file >> word) {
+//         wordList.push_back(word);
+//     }
+//     file.close();
+// }
+
+// void SentimentAnalysisLinkedList::loadReviewsFromCSV(const std::string& csvFileName) {
+//     std::ifstream file(csvFileName);
+//     std::string line, review;
+//     int rating;
+//     while (getline(file, line)) {
+//         std::istringstream ss(line);
+//         getline(ss, review, ',');
+//         ss >> rating;
+//         addReviewToLinkedList(trim(review), rating);
+//     }
+//     file.close();
+// }
+
+// void SentimentAnalysisLinkedList::addReviewToLinkedList(const std::string& review, int rating) {
+//     ReviewNode* newNode = new ReviewNode{ review, rating, nullptr };
+//     if (!head) {
+//         head = newNode;
+//     } else {
+//         ReviewNode* temp = head;
+//         while (temp->next) {
+//             temp = temp->next;
+//         }
+//         temp->next = newNode;
+//     }
+// }
+
+// int SentimentAnalysisLinkedList::calculateSentimentScore(const std::string& review) {
+//     int positiveCount = 0, negativeCount = 0;
+//     std::istringstream ss(review);
+//     std::string word;
+//     while (ss >> word) {
+//         word = trim(word);
+//         if (std::find(positiveWords.begin(), positiveWords.end(), word) != positiveWords.end()) {
+//             positiveCount++;
+//         } else if (std::find(negativeWords.begin(), negativeWords.end(), word) != negativeWords.end()) {
+//             negativeCount++;
+//         }
+//     }
+//     return positiveCount - negativeCount;
+// }
+
+// void SentimentAnalysisLinkedList::calculateAllSentimentScores() {
+//     ReviewNode* current = head;
+//     while (current) {
+//         int sentimentScore = calculateSentimentScore(current->review);
+//         std::cout << "Review: " << current->review << "\nSentiment Score: " << sentimentScore << "\n" << std::endl;
+//         current = current->next;
+//     }
+// }
+
+// void SentimentAnalysisLinkedList::compareRatingsWithSentiment() {
+//     // Implement comparison logic and output results as required
+// }
+
+// void SentimentAnalysisLinkedList::generateOverallSentimentReport() {
+//     // Implement overall sentiment analysis report logic here
+// }
+
+// // ==================== Main Function ====================
+
+// int main() {
+//     // Example file paths (replace with your actual file paths)
+//     std::string reviewsFile = "tripadvisor_hotel_reviews.csv";
+//     std::string positiveWordsFile = "positive-words.txt";
+//     std::string negativeWordsFile = "negative-words.txt";
+
+//     // Sentiment analysis using arrays
+//     std::cout << "Sentiment Analysis using Arrays:" << std::endl;
+//     SentimentAnalysisArray analysisArray(reviewsFile, positiveWordsFile, negativeWordsFile);
+//     analysisArray.calculateAllSentimentScores();
+//     analysisArray.compareRatingsWithSentiment();
+//     analysisArray.generateOverallSentimentReport();
+
+//     // Sentiment analysis using linked lists
+//     std::cout << "\nSentiment Analysis using Linked Lists:" << std::endl;
+//     SentimentAnalysisLinkedList analysisLinkedList(reviewsFile, positiveWordsFile, negativeWordsFile);
+//     analysisLinkedList.calculateAllSentimentScores();
+//     analysisLinkedList.compareRatingsWithSentiment();
+//     analysisLinkedList.generateOverallSentimentReport();
+
+//     return 0;
+// }
